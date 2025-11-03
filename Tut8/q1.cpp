@@ -38,28 +38,28 @@ int main()
         switch(read_switch)
         {
             case 0:  // Binary 000 -> BCD 0000
-                XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x00);
-                break;
-            case 1:  // Binary 001 -> BCD 0001
                 XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x01);
                 break;
-            case 2:  // Binary 010 -> BCD 0010
+            case 1:  // Binary 001 -> BCD 0001
                 XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x02);
                 break;
-            case 3:  // Binary 011 -> BCD 0011
-                XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x03);
-                break;
-            case 4:  // Binary 100 -> BCD 0100
+            case 2:  // Binary 010 -> BCD 0010
                 XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x04);
                 break;
+            case 3:  // Binary 011 -> BCD 0011
+                XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x08);
+                break;
+            case 4:  // Binary 100 -> BCD 0100
+                XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x10);
+                break;
             case 5:  // Binary 101 -> BCD 0101
-                XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x05);
+                XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x20);
                 break;
             case 6:  // Binary 110 -> BCD 0110
-                XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x06);
+                XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x40);
                 break;
             case 7:  // Binary 111 -> BCD 0111
-                XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x07);
+                XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x80);
                 break;
             default:
                 XGpio_DiscreteWrite(GPIOInstance_Ptr, 1, 0x00);
