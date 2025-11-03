@@ -35,7 +35,7 @@ int main()
     
     // pin 0 to be connected to the LED
     XGpio_SetDataDirection(&Gpio, CHANNEL1, 0x00);
-    XTmrCtr_SetResetValue(&TimerInstancePtr, 0, 0x61A8);
+    XTmrCtr_SetResetValue(&TimerInstancePtr, 0, 0x61A6);
     
     // alternative to set the option
     //XTmrCtr_SetOptions(&TimerInstancePtr, XPAR_AXI_TIMER_0_DEVICE_ID, XTC_GENERATE_MODE_OPTION);
