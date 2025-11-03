@@ -30,7 +30,7 @@ int main()
     XGpio_SetDataDirection(&GPIOInstance_Ptr, 1, 0x00);
     
     // channel 1 to be connected to the switches (3 bits)
-    XGpio_SetDataDirection(&GPIOInstance_Ptr, 1, 0x07);
+    XGpio_SetDataDirection(&GPIOInstance_Ptr, 0, 0x07);
     
     while (1) {
         u32 read_switch = XGpio_DiscreteRead(GPIOInstance_Ptr, 1);
