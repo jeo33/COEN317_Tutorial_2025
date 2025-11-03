@@ -42,7 +42,7 @@ int main()
     
     u32 TmrCtr_Ptr = (u32*) XPAR_TMRCTR_0_BASEADDR; //defined in xparameter header file
     int offset = 0; //offset is set to 0 to get access to the TCSR0
-    XIo_Out32(TmrCtr_Ptr + offset) = 0x000B6; //write to the TCSR0
+    *(TmrCtr_Ptr + offset) = 0x000B6; //write to the TCSR0
     // (timer/counter control/status register of the timer 0)
     
     while (1) {
