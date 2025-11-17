@@ -236,7 +236,7 @@ int main()
     // timer counter configuration
     // Configure timer in generate mode, count up, interrupt enabled
     // with autoreload of load register
-    *(timer_ptr) = 0x0D4 ;
+    *(timer_ptr) = 0x0f4 ;
     
     xStatus=
     ScuGicInterrupt_Init(XPAR_PS7_SCUGIC_0_DEVICE_ID, &TimerInstancePtr);
