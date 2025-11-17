@@ -214,97 +214,48 @@ int ScuGicInterrupt_Init(u16 DeviceId, XTmrCtr *TimerInstancePtr)
 ******************************************************************************/
 int main()
 {
-    int Status;
-    unsigned int *timer_ptr;
+    cout << "Application starts " << endl;
+    int xStatus;
     
-    cout << "====== AXI Timer Interrupt Example ======" << endl;
-    cout << "Application starts" << endl;
-    
-    /*
-     * Initialize the timer counter so that it's ready to use,
-     * specify the device ID that is generated in xparameters.h
-     */
-    Status = XTmrCtr_Initialize(&TimerInstancePtr, TIMER_DEVICE_ID);
-    if (XST_SUCCESS != Status) {
-        cout << "Timer initialization failed" << endl;
-        return XST_FAILURE;
+    // timer counter initialization
+    xStatus = XTmrCtr_Initialize(&TimerInstancePtr, XPAR_AXI_TIMER_0_DEVICE_ID);
+    if(XST_SUCCESS != xStatus)
+    {
+        cout << "timer counter initialization failed" ;
     }
     
-    /*
-     * Perform a self-test to ensure that the hardware was built correctly
-     */
-    Status = XTmrCtr_SelfTest(&TimerInstancePtr, TIMER_COUNTER_0);
-    if (Status != XST_SUCCESS) {
-        cout << "Timer self test failed" << endl;
-        return XST_FAILURE;
-    }
-    cout << "Timer self test passed" << endl;
+    // timer handler
+    XTmrCtr_SetHandler(&TimerInstancePtr, (XTmrCtr_Handler)Timer_InterruptHandler, &TimerInstancePtr);
     
-    /*
-     * Connect the timer counter to the interrupt subsystem such that
-     * interrupts can occur. This function is application specific.
-     */
-    Status = ScuGicInterrupt_Init(INTC_DEVICE_ID, &TimerInstancePtr);
-    if (Status != XST_SUCCESS) {
-        cout << "SCUGIC initialization failed" << endl;
-        return XST_FAILURE;
-    }
+    // initialize time pointer with value from xparameters.h file
+    unsigned int* timer_ptr = (unsigned int*)XPAR_AXI_TIMER_0_BASEADDR;
     
-    /*
-     * Setup the handler for the timer counter that will be called from the
-     * interrupt context when the timer expires
-     */
-    XTmrCtr_SetHandler(&TimerInstancePtr, Timer_InterruptHandler,
-                       &TimerInstancePtr);
+    // load tlr
+    *(timer_ptr + 1) = 0x00000000;
     
-    /*
-     * Enable the interrupt of the timer counter so interrupts will occur
-     * and use auto reload mode such that the timer counter will reload
-     * itself automatically and continue repeatedly, without this option
-     * it would expire once only
-     */
-    XTmrCtr_SetOptions(&TimerInstancePtr, TIMER_COUNTER_0,
-                       XTC_INT_MODE_OPTION | XTC_AUTO_RELOAD_OPTION);
+    // timer counter configuration
+    // Configure timer in generate mode, count up, interrupt enabled
+    // with autoreload of load register
+    *(timer_ptr) = 0x0D4 ;
     
-    /*
-     * Set a reset value for the timer counter such that it will expire
-     * earlier than letting it roll over from 0, the reset value is loaded
-     * into the timer counter when it starts
-     */
-    XTmrCtr_SetResetValue(&TimerInstancePtr, TIMER_COUNTER_0, TIMER_LOAD_VALUE);
-    
-    /*
-     * Start the timer counter such that it's incrementing by default,
-     * then wait for it to timeout a number of times
-     */
-    XTmrCtr_Start(&TimerInstancePtr, TIMER_COUNTER_0);
-    TimerStarted = 1;
-    
-    cout << "Timer started - will generate 10 interrupts at 1 second intervals" << endl;
-    
-    /*
-     * Wait for timer interrupts to occur
-     * The timer handler will stop the timer after 10 interrupts
-     */
-    while (TimerStarted == 1) {
-        /* Wait for interrupts to occur */
-        /* In a real application, you could do other work here */
+    xStatus=
+    ScuGicInterrupt_Init(XPAR_PS7_SCUGIC_0_DEVICE_ID, &TimerInstancePtr);
+    if(XST_SUCCESS != xStatus)
+    {
+        cout << " :( SCUGIC INIT FAILED )" << endl;
+        return 1;
     }
     
-    cout << "Timer example completed successfully" << endl;
-    cout << "Total interrupts received: " << InterruptCounter << endl;
+    *(timer_ptr) = 0x0d4 ;  // deassert the load 5 to allow the timer to start counting
     
-    /*
-     * Disable the interrupt for the timer
-     */
-    XScuGic_Disable(&InterruptController, TIMER_INTERRUPT_ID);
+    // let timer run forever generating periodic interrupts
     
-    /*
-     * Disconnect the interrupt handler
-     */
-    XScuGic_Disconnect(&InterruptController, TIMER_INTERRUPT_ID);
+    while(1)
+    {
+        // infinite loop
+    }
     
-    return XST_SUCCESS;
+    return 0;
 }
 
 /******************************************************************************/
